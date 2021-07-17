@@ -63,14 +63,15 @@ app
     if (!description || !completed) return res.status(400).send("Missing Data");
 
     try {
-      const task = await Task.findByIdAndUpdate(
-        req.params.id,
-        {
-          description,
-          completed,
-        },
-        { runValidators: true, new: true }
-      );
+      const task = await Task.findById(req.params.id);
+
+      if (!task) return res.status(400).send("Didnt find the task");
+
+      Object.keys(req.body).forEach((key) => {
+        task[key] = req.body[key];
+      });
+
+      task.save();
 
       res.send(task);
     } catch (error) {

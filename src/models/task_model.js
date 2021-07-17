@@ -18,6 +18,14 @@ const taskSchema = new Schema(
   { timestamps: true }
 );
 
+taskSchema.pre("save", async function (next) {
+  const task = this;
+
+  const { description, completed } = task;
+
+  next();
+});
+
 const Task = mongoose.model("Task", taskSchema);
 
 module.exports = Task;

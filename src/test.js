@@ -1,14 +1,16 @@
 const bcrypt = require("bcrypt");
 
-let passT;
+const jwt = require("jsonwebtoken");
 
-async function myFunction() {
-  passT = await bcrypt.hash("okaokfea", 10);
+const myFunction = async () => {
+  const token = jwt.sign({ _id: "abc123" }, "thisismynewcourse", {
+    expiresIn: "7 days",
+  });
 
-  console.log(passT);
-  const vrai = await bcrypt.compare("okaokfea", passT);
+  console.log({ token });
 
-  console.log(vrai);
-}
+  const data = jwt.verify(token, "thisismynewcourse");
+  console.log({ data });
+};
 
 myFunction();

@@ -1,27 +1,29 @@
 const app = require("express")();
 const User = require("../models/user_model");
-const hashingPassword = require("../middlewares/password_hashing");
-const isStrongPassword = require("../utils/is_strong_password");
 
+//Plural
 app
   .route("/users")
 
   .post(async (req, res) => {
     const { name, password, email } = req.body;
-
-    if (!isStrongPassword(password))
-      return res.status(400).send("Password is too weak");
-
-    const hashedPassword = await hashingPassword(password);
-
     try {
-      const doc = await User.create({ name, password: hashedPassword, email });
-      res.status(201).send(doc);
+      const user = await new User({ name, password, email });
+      await user.save();
+      res.status(201).send(user);
     } catch (error) {
       res.status(401).send(error.message);
     }
+  })
+  .delete(async (req, res) => {
+    try {
+      await User.deleteMany();
+      res.send();
+    } catch (error) {
+      res.status(500).send();
+    }
   });
-
+//Single
 app
   .route("/users/:id")
   .get(async (req, res) => {
@@ -38,20 +40,14 @@ app
     if (!name || !email || !password || !age)
       return res.status(400).send("Missing datas");
 
-    if (!isStrongPassword(password))
-      return res.status(400).send("Password is too weak");
-
-    const hashedPassword = await hashingPassword(password);
-
     try {
-      const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { ...req.body, password: hashedPassword },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+      const user = await User.findById(req.params.id);
+
+      Object.keys(req.body).forEach((key) => {
+        user[key] = req.body[key];
+      });
+
+      await user.save();
 
       if (!user) return res.status(404).send();
       res.send(user);
@@ -59,5 +55,18 @@ app
       res.status(500).send(error.message);
     }
   });
+
+//Login
+app.route("/users/login").post(async (req, res) => {
+  try {
+    const user = await User.findByCredentials(
+      req.body.email,
+      req.body.password
+    );
+    res.send(user);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
 
 module.exports = app;
