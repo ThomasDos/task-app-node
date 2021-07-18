@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
 const validator = require("validator");
 const isStrongPassword = require("../utils/is_strong_password");
-const hashingPassword = require("../middlewares/password_hashing");
-const bcrypt = require("bcrypt");
+const hashingPassword = require("../utils/password_hashing");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new Schema(
   {
@@ -44,15 +45,33 @@ const userSchema = new Schema(
         }
       },
     },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
+
+userSchema.methods.generateAuthToken = async function () {
+  const user = this;
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
+  return token;
+};
 
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) throw new Error("Unable to login");
 
   const isMatch = await bcrypt.compare(password, user.password);
+
   if (!isMatch) throw new Error("Unable to login");
 
   return user;
@@ -60,11 +79,12 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.pre("save", async function (next) {
   const user = this;
-
   if (!isStrongPassword(user.password))
     return res.status(400).send("Password is too weak");
 
-  user.password = await hashingPassword(user.password);
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 12);
+  }
 
   next();
 });

@@ -1,16 +1,26 @@
 const app = require("express")();
 const User = require("../models/user_model");
+const auth = require("../middlewares/authentification");
 
 //Plural
 app
   .route("/users")
+  .get(auth, async (req, res) => {
+    try {
+      const users = await User.find();
+      res.send(users);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
 
   .post(async (req, res) => {
     const { name, password, email } = req.body;
+    const user = new User({ name, password, email });
     try {
-      const user = await new User({ name, password, email });
       await user.save();
-      res.status(201).send(user);
+      const token = await user.generateAuthToken();
+      res.status(201).send({ user, token });
     } catch (error) {
       res.status(401).send(error.message);
     }
@@ -63,7 +73,9 @@ app.route("/users/login").post(async (req, res) => {
       req.body.email,
       req.body.password
     );
-    res.send(user);
+    const token = await user.generateAuthToken();
+
+    res.send({ user, token });
   } catch (error) {
     res.status(500).send(error.message);
   }
