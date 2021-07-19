@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
 const validator = require("validator");
 const isStrongPassword = require("../utils/is_strong_password");
-const hashingPassword = require("../utils/password_hashing");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -86,9 +85,9 @@ userSchema.pre("save", async function (next) {
   if (!isStrongPassword(user.password))
     return res.status(400).send("Password is too weak");
 
-  if (user.isModified("password")) {
-    user.password = await bcrypt.hash(user.password, 12);
-  }
+  // if (user.isModified("password")) {
+  //   user.password = await bcrypt.hash(user.password, 12);
+  // }
 
   next();
 });
