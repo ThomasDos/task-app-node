@@ -1,7 +1,22 @@
-const auth = async (req, res, next) => {
-  console.log("Auth midd");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user_model");
 
-  next();
+const auth = async (req, res, next) => {
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findOne({
+      _id: decoded._id,
+      "tokens.token": token,
+    });
+    if (!user) throw new Error("Couldnt find user");
+
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).send(error.message);
+  }
 };
 
 module.exports = auth;

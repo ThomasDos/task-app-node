@@ -1,11 +1,13 @@
 const app = require("express")();
 const User = require("../models/user_model");
 const auth = require("../middlewares/authentification");
+const authAdmin = require("../middlewares/auth_admin");
 
 //Plural
 app
   .route("/users")
-  .get(auth, async (req, res) => {
+  .get(auth, authAdmin, async (req, res) => {
+    console.log({ user: req.user });
     try {
       const users = await User.find();
       res.send(users);
@@ -25,7 +27,7 @@ app
       res.status(401).send(error.message);
     }
   })
-  .delete(async (req, res) => {
+  .delete(auth, authAdmin, async (req, res) => {
     try {
       await User.deleteMany();
       res.send();
@@ -33,6 +35,12 @@ app
       res.status(500).send();
     }
   });
+
+//User me
+app.route("/users/me").get(auth, (req, res) => {
+  res.send(req.user);
+});
+
 //Single
 app
   .route("/users/:id")
