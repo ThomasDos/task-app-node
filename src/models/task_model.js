@@ -14,17 +14,22 @@ const taskSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
 
-taskSchema.pre("save", async function (next) {
-  const task = this;
+// taskSchema.pre("save", async function (next) {
+//   const task = this;
 
-  const { description, completed } = task;
+//   const { description, completed } = task;
 
-  next();
-});
+//   next();
+// });
 
 const Task = mongoose.model("Task", taskSchema);
 

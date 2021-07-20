@@ -38,10 +38,41 @@ app
   });
 
 //User me
-app.route("/users/me").get(auth, (req, res) => {
-  res.send(req.user);
-});
+app
+  .route("/users/me")
+  .get(auth, (req, res) => {
+    res.send(req.user);
+  })
+  .patch(auth, async (req, res) => {
+    const { password } = req.body;
 
+    try {
+      let user = await User.findById(req.user.id);
+      Object.keys(req.body).forEach((key) => {
+        user[key] = req.body[key];
+      });
+
+      if (password) {
+        const passwordHashed = await passwordHashing(password);
+        user.password = passwordHashed;
+      }
+
+      await user.save();
+
+      if (!user) return res.status(404).send();
+      res.send(user);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+  .delete(auth, async (req, res) => {
+    try {
+      await req.user.remove();
+      res.send(req.user);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 //Logout All
 app.post("/users/logoutAll", auth, async (req, res) => {
   try {
@@ -81,39 +112,5 @@ app.route("/users/login").post(async (req, res) => {
     res.status(500).send(error.message);
   }
 });
-
-//Single
-app
-  .route("/users/:id")
-  .get(async (req, res) => {
-    try {
-      const doc = await User.findById(req.params.id);
-      res.send(doc);
-    } catch (error) {
-      res.status(400).send(error.message);
-    }
-  })
-  .patch(async (req, res) => {
-    const { name, email, password, age } = req.body;
-
-    if (!name || !email || !password || !age)
-      return res.status(400).send("Missing datas");
-
-    try {
-      const user = await User.findById(req.params.id);
-      password = await passwordHashing(password);
-      user.password = password;
-      Object.keys(req.body).forEach((key) => {
-        user[key] = req.body[key];
-      });
-
-      await user.save();
-
-      if (!user) return res.status(404).send();
-      res.send(user);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
 
 module.exports = app;

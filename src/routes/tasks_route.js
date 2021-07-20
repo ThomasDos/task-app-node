@@ -1,5 +1,6 @@
 const app = require("express")();
 const Task = require("../models/task_model");
+const auth = require("../middlewares/authentification");
 
 //Plural
 app
@@ -12,11 +13,13 @@ app
       res.status(400).send(err.message);
     }
   })
-  .post(async (req, res) => {
-    let { description, completed } = req.body;
+  .post(auth, async (req, res) => {
+    const { description, completed } = req.body;
 
+    const { _id } = req.user;
+    const task = new Task({ description, completed, owner: _id });
     try {
-      const task = await Task.create({ description, completed });
+      await task.save();
       res.status(201).send(task);
     } catch (error) {
       res.status(400).send(error.message);
