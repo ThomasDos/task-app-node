@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
-const validator = require("validator");
 
 const taskSchema = new Schema(
   {
@@ -22,14 +21,6 @@ const taskSchema = new Schema(
   },
   { timestamps: true }
 );
-
-// taskSchema.pre("save", async function (next) {
-//   const task = this;
-
-//   const { description, completed } = task;
-
-//   next();
-// });
 
 const Task = mongoose.model("Task", taskSchema);
 

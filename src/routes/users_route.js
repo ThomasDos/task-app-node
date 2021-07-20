@@ -1,5 +1,6 @@
 const app = require("express")();
 const User = require("../models/user_model");
+const Task = require("../models/task_model");
 const auth = require("../middlewares/authentification");
 const authAdmin = require("../middlewares/auth_admin");
 const passwordHashing = require("../utils/password_hashing");
@@ -30,6 +31,7 @@ app
   })
   .delete(auth, authAdmin, async (req, res) => {
     try {
+      await Task.deleteMany();
       await User.deleteMany();
       res.send();
     } catch (error) {
@@ -44,7 +46,9 @@ app
     res.send(req.user);
   })
   .patch(auth, async (req, res) => {
-    const { password } = req.body;
+    const { password, admin } = req.body;
+
+    if (admin) return res.status(401).send("Bad Boy!");
 
     try {
       let user = await User.findById(req.user.id);

@@ -4,6 +4,7 @@ const validator = require("validator");
 const isStrongPassword = require("../utils/is_strong_password");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Task = require("../models/task_model");
 
 const userSchema = new Schema(
   {
@@ -84,6 +85,8 @@ userSchema.virtual("tasks", {
   foreignField: "owner",
 });
 
+//Log user with email / password
+
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) throw new Error("Unable to login");
@@ -100,10 +103,14 @@ userSchema.pre("save", async function (next) {
   if (!isStrongPassword(user.password))
     return res.status(400).send("Password is too weak");
 
-  // if (user.isModified("password")) {
-  //   user.password = await bcrypt.hash(user.password, 12);
-  // }
+  next();
+});
 
+// Delete user tasks when user is removed
+
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  await Task.deleteMany({ owner: user._id });
   next();
 });
 
