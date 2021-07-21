@@ -1,9 +1,11 @@
 const app = require("express")();
 const User = require("../models/user_model");
 const Task = require("../models/task_model");
-const auth = require("../middlewares/authentification");
+const auth = require("../middlewares/authentication");
 const authAdmin = require("../middlewares/auth_admin");
 const passwordHashing = require("../utils/password_hashing");
+const uploadAvatar = require("../middlewares/user_profile");
+const errorHandler = require("../middlewares/error_handler");
 
 //Plural
 app
@@ -77,6 +79,18 @@ app
       res.status(500).send(error.message);
     }
   });
+
+//Upload Profile pic
+
+app.post(
+  "/users/me/avatar",
+  uploadAvatar.single("avatar"),
+  (req, res) => {
+    res.send();
+  },
+  errorHandler
+);
+
 //Logout All
 app.post("/users/logoutAll", auth, async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 const app = require("express")();
 const Task = require("../models/task_model");
-const auth = require("../middlewares/authentification");
+const auth = require("../middlewares/authentication");
 
 //Plural
 app
