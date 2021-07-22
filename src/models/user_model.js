@@ -53,6 +53,9 @@ const userSchema = new Schema(
         },
       },
     ],
+    avatar: {
+      type: Buffer,
+    },
     admin: {
       type: Boolean,
       default: false,
@@ -76,6 +79,7 @@ userSchema.methods.toJSON = function () {
 
   delete userObject.password;
   delete userObject.tokens;
+  delete userObject.avatar;
   return userObject;
 };
 
