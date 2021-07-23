@@ -15,7 +15,7 @@ module.exports.sendWelcomeMail = async (to, name) => {
   });
 };
 
-module.exports.sendCancelMail = async (to, name, dateSub) => {
+module.exports.sendCancellationMail = async (to, name, dateSub) => {
   const date = daysBetween(dateSub);
 
   await sgMail.send({

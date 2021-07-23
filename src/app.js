@@ -1,4 +1,4 @@
-//Dependencies
+//App
 const app = require("express")();
 
 //App Configs

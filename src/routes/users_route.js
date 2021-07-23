@@ -7,7 +7,7 @@ const passwordHashing = require("../utils/password_hashing");
 const uploadAvatar = require("../middlewares/user_profile");
 const errorHandler = require("../middlewares/error_handler");
 const formatAvatar = require("../middlewares/format_avatar");
-// const sgMail = require("../services/emails/account");
+// const {sendWelcomeMail, sendCancellationMail} = require("../services/emails/account"); //! Disabled
 
 //Plural
 app
@@ -28,7 +28,7 @@ app
     try {
       await user.save();
       const token = await user.generateAuthToken();
-      // await sgMail.sendWelcomeMail(email, name); --> //! Disabled
+      // sendWelcomeMail(email, name); --> //! Disabled
       res.status(201).send({ user, token });
     } catch (error) {
       res.status(401).send(error.message);
@@ -76,10 +76,13 @@ app
   })
   .delete(auth, async (req, res) => {
     try {
-      const { email, name, createdAt } = req.user;
-      await req.user.remove();
-      // await sgMail.sendCancelMail(email, name, createdAt);--> //! Disabled
-      res.send(req.user);
+      const {
+        user,
+        user: { email, name, createdAt },
+      } = req;
+      await user.remove();
+      // sendCancelMail(email, name, createdAt);--> //! Disabled
+      res.send(user);
     } catch (error) {
       res.status(500).send(error.message);
     }
