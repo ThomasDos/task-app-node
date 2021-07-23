@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=production node src/app.js",
-    "dev": "NODE_ENV=dev nodemon src/app.js",
+    "dev": "NODE_ENV=development nodemon src/app.js",
     "heroku-update" : "git add . && git commit -m \"quick update\" && git push && git push heroku main"
   },
   "keywords": [],
