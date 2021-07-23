@@ -22,9 +22,7 @@ app
   })
 
   .post(async (req, res) => {
-    const testkey = { keyMongo: process.env.MONGOATLAS_KEY };
-
-    res.send(testkey);
+    res.send({ env: process.env_NODE_ENV });
     let { name, password, email } = req.body;
     password = await passwordHashing(password);
     const user = new User({ name, password, email });
