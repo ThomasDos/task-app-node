@@ -8,7 +8,7 @@ const urlDB =
     : "mongodb://localhost:27017/task-app";
 
 mongoose
-  .connect(urlDB, {
+  .connect(mongoDBAtlas, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,

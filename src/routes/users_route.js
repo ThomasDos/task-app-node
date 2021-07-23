@@ -22,7 +22,6 @@ app
   })
 
   .post(async (req, res) => {
-    res.send({ env: process.env_NODE_ENV });
     let { name, password, email } = req.body;
     password = await passwordHashing(password);
     const user = new User({ name, password, email });
