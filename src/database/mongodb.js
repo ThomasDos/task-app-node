@@ -4,7 +4,7 @@ const mongoDBAtlas = `mongodb+srv://admin:${process.env.MONGOATLAS_KEY}@task-app
 
 const urlDB =
   process.env.NODE_ENV.trim() == "development"
-    ? "mongodb://localhost:27017/task-app"
+    ? process.env.MONGODB_LOCAL
     : mongoDBAtlas;
 
 mongoose

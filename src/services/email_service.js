@@ -1,5 +1,5 @@
 const sgMail = require("@sendgrid/mail");
-const daysBetween = require("../../utils/days_between");
+const daysBetween = require("../utils/days_between");
 
 //Set SgMail
 sgMail.setApiKey(process.env.SENDGRID_KEY);

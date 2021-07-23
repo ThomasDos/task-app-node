@@ -10,5 +10,4 @@ require("./configs/router")(app);
 //DB
 require("./database/mongodb");
 
-//Server
-require("./configs/server")(app);
+module.exports = app;

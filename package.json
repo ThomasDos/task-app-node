@@ -4,10 +4,13 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "set NODE_ENV=production&& node src/app.js",
-    "dev": "set NODE_ENV=development&&nodemon src/app.js",
+    "test": "set NODE_ENV=development&& env-cmd -f ./src/configs/test.env jest --watch",
+    "start": "set NODE_ENV=production&& node src/index.js",
+    "dev": "set NODE_ENV=development&& env-cmd -f ./src/configs/dev.env nodemon src/index.js",
     "heroku-update": "git add . && git commit -m \"quick update\" && git push && git push heroku main"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +30,8 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "env-cmd": "^10.1.0"
+    "env-cmd": "^10.1.0",
+    "jest": "^27.0.6",
+    "supertest": "^6.1.4"
   }
 }

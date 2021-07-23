@@ -7,7 +7,7 @@ const passwordHashing = require("../utils/password_hashing");
 const uploadAvatar = require("../middlewares/user_profile");
 const errorHandler = require("../middlewares/error_handler");
 const formatAvatar = require("../middlewares/format_avatar");
-// const {sendWelcomeMail, sendCancellationMail} = require("../services/emails/account"); //! Disabled
+// const {sendWelcomeMail, sendCancellationMail} = require("../services/email_service"); //! Disabled
 
 //Plural
 app
