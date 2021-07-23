@@ -1,1 +1,1 @@
-web: NODE_ENV=production node src/app.js
+web: SET NODE_ENV=production node src/app.js
