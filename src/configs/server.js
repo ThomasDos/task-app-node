@@ -1,4 +1,5 @@
-const port = process.env.NODE_ENV === "production" ? process.env.PORT : 3000;
+const port =
+  process.env.NODE_ENV.trim() == "development" ? 3000 : process.env.PORT;
 
 module.exports = (app) => {
   app.listen(port, (err) => {

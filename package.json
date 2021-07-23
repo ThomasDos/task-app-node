@@ -5,9 +5,9 @@
   "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production node src/app.js",
-    "dev": "NODE_ENV=development nodemon src/app.js",
-    "heroku-update" : "git add . && git commit -m \"quick update\" && git push && git push heroku main"
+    "start": "set NODE_ENV=production&& node src/app.js",
+    "dev": "set NODE_ENV=development&&nodemon src/app.js",
+    "heroku-update": "git add . && git commit -m \"quick update\" && git push && git push heroku main"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,7 @@
     "validator": "^13.6.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0"
   }
 }
