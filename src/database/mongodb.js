@@ -7,12 +7,11 @@ const urlDB =
     ? process.env.MONGODB_LOCAL
     : mongoDBAtlas;
 
-mongoose
-  .connect(urlDB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-  })
-  .then(() => console.log("MongoDB is connected..."))
-  .catch((err) => console.log(err));
+mongoose.connect(urlDB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+});
+// .then(() => console.log("The database is connected on " + urlDB))
+// .catch((err) => console.log(err));

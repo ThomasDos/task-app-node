@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
 const validator = require("validator");
 const isStrongPassword = require("../utils/is_strong_password");
+const passwordHashing = require("../utils/password_hashing");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("../models/task_model");
@@ -93,11 +94,11 @@ userSchema.virtual("tasks", {
 
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
-  if (!user) throw new Error("Unable to login");
+  if (!user) return false;
 
   const isMatch = await bcrypt.compare(password, user.password);
 
-  if (!isMatch) throw new Error("Unable to login");
+  if (!isMatch) return false;
 
   return user;
 };
@@ -106,6 +107,8 @@ userSchema.pre("save", async function (next) {
   const user = this;
   if (!isStrongPassword(user.password))
     return res.status(400).send("Password is too weak");
+  if (user.isModified("password"))
+    user.password = await passwordHashing(user.password);
 
   next();
 });

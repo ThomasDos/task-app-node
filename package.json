@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "test": "set NODE_ENV=development&& env-cmd -f ./src/configs/test.env jest --watch",
+    "test": "set NODE_ENV=development&& env-cmd -f ./src/configs/test.env jest --watch --runInBand",
     "start": "set NODE_ENV=production&& node src/index.js",
     "dev": "set NODE_ENV=development&& env-cmd -f ./src/configs/dev.env nodemon src/index.js",
     "heroku-update": "git add . && git commit -m \"quick update\" && git push && git push heroku main"
